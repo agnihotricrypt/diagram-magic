@@ -13,11 +13,18 @@ import {
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { initialNodes, initialEdges } from "./initial-elements";
-import { CustomNode } from "./CustomNode";
+import { ProcessNode } from "./nodes/ProcessNode";
+import { DiamondNode } from "./nodes/DiamondNode";
+import { CircleNode } from "./nodes/CircleNode";
+import { DatabaseNode } from "./nodes/DatabaseNode";
 import { DiagramToolbar } from "./DiagramToolbar";
 
+// Register all available node types
 const nodeTypes = {
-  custom: CustomNode,
+  process: ProcessNode,
+  diamond: DiamondNode,
+  circle: CircleNode,
+  database: DatabaseNode,
 };
 
 export const DiagramEditor = () => {
@@ -45,11 +52,12 @@ export const DiagramEditor = () => {
         y: event.clientY - 50,
       };
 
+      // Create new node with the dropped type
       const newNode = {
         id: `node_${nodes.length + 1}`,
         type,
         position,
-        data: { label: `Node ${nodes.length + 1}` },
+        data: { label: `${type.charAt(0).toUpperCase() + type.slice(1)} ${nodes.length + 1}` },
       };
 
       setNodes((nds) => nds.concat(newNode));
