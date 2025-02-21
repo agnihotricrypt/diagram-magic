@@ -9,10 +9,31 @@ import {
 
 // Node types for the General section
 const GENERAL_NODES = [
-  { type: "process", label: "Process" },
-  { type: "diamond", label: "Decision" },
-  { type: "circle", label: "Start/End" },
-  { type: "database", label: "Database" },
+  { 
+    type: "process", 
+    label: "", // Empty label since we're using shapes
+    shape: <div className="w-16 h-8 border-2 rounded" /> 
+  },
+  { 
+    type: "diamond", 
+    label: "",
+    shape: <div className="w-8 h-8 border-2 rotate-45" />
+  },
+  { 
+    type: "circle", 
+    label: "",
+    shape: <div className="w-8 h-8 border-2 rounded-full" />
+  },
+  { 
+    type: "database", 
+    label: "",
+    shape: (
+      <div className="w-12 h-10 border-2 rounded-md overflow-hidden flex flex-col">
+        <div className="h-2 border-b-2 bg-muted/20" />
+        <div className="flex-1" />
+      </div>
+    )
+  },
 ];
 
 export const DiagramSidebar = () => {
@@ -27,15 +48,15 @@ export const DiagramSidebar = () => {
         <SidebarGroup>
           <SidebarGroupLabel>General</SidebarGroupLabel>
           <SidebarGroupContent>
-            <div className="flex flex-col gap-2 p-2">
+            <div className="flex flex-col gap-4 p-4">
               {GENERAL_NODES.map((node) => (
                 <div
                   key={node.type}
-                  className="border rounded px-4 py-2 cursor-move bg-card hover:bg-accent transition-colors"
+                  className="flex items-center justify-center w-full h-16 border rounded px-4 cursor-move bg-card hover:bg-accent transition-colors"
                   onDragStart={(event) => onDragStart(event, node.type)}
                   draggable
                 >
-                  {node.label}
+                  {node.shape}
                 </div>
               ))}
             </div>
