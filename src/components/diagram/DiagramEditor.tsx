@@ -5,7 +5,6 @@ import {
   Background,
   Controls,
   MiniMap,
-  Panel,
   useNodesState,
   useEdgesState,
   addEdge,
@@ -17,7 +16,6 @@ import { ProcessNode } from "./nodes/ProcessNode";
 import { DiamondNode } from "./nodes/DiamondNode";
 import { CircleNode } from "./nodes/CircleNode";
 import { DatabaseNode } from "./nodes/DatabaseNode";
-import { DiagramToolbar } from "./DiagramToolbar";
 
 // Register all available node types
 const nodeTypes = {
@@ -87,9 +85,6 @@ export const DiagramEditor = () => {
         />
         <Controls className="bg-background border shadow-lg" />
         <MiniMap className="!bg-background !border !shadow-lg" />
-        <Panel position="top-center" className="bg-background border shadow-lg rounded-lg p-2">
-          <DiagramToolbar />
-        </Panel>
       </ReactFlow>
     </div>
   );
