@@ -12,23 +12,23 @@ const GENERAL_NODES = [
   { 
     type: "process", 
     label: "", // Empty label since we're using shapes
-    shape: <div className="w-16 h-8 border-2 rounded" /> 
+    shape: <div className="w-12 h-6 border-2 rounded" /> 
   },
   { 
     type: "diamond", 
     label: "",
-    shape: <div className="w-8 h-8 border-2 rotate-45" />
+    shape: <div className="w-6 h-6 border-2 rotate-45" />
   },
   { 
     type: "circle", 
     label: "",
-    shape: <div className="w-8 h-8 border-2 rounded-full" />
+    shape: <div className="w-6 h-6 border-2 rounded-full" />
   },
   { 
     type: "database", 
     label: "",
     shape: (
-      <div className="w-12 h-10 border-2 rounded-md overflow-hidden flex flex-col">
+      <div className="w-8 h-8 border-2 rounded-md overflow-hidden flex flex-col">
         <div className="h-2 border-b-2 bg-muted/20" />
         <div className="flex-1" />
       </div>
@@ -52,7 +52,7 @@ export const DiagramSidebar = () => {
               {GENERAL_NODES.map((node) => (
                 <div
                   key={node.type}
-                  className="flex items-center justify-center w-full h-16 border rounded px-4 cursor-move bg-card hover:bg-accent transition-colors"
+                  className="cursor-move hover:bg-accent/10 transition-colors p-2"
                   onDragStart={(event) => onDragStart(event, node.type)}
                   draggable
                 >
