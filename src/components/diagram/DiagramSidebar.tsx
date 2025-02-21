@@ -12,24 +12,24 @@ const GENERAL_NODES = [
   { 
     type: "process", 
     label: "", // Empty label since we're using shapes
-    shape: <div className="w-[200px] h-[100px] border-2 rounded scale-[0.3] origin-top-left transform" /> 
+    shape: <div className="w-12 h-6 border-2 rounded" /> 
   },
   { 
     type: "diamond", 
     label: "",
-    shape: <div className="w-[150px] h-[150px] border-2 rotate-45 scale-[0.3] origin-top-left transform" />
+    shape: <div className="w-6 h-6 border-2 rotate-45" />
   },
   { 
     type: "circle", 
     label: "",
-    shape: <div className="w-[100px] h-[100px] border-2 rounded-full scale-[0.3] origin-top-left transform" />
+    shape: <div className="w-6 h-6 border-2 rounded-full" />
   },
   { 
     type: "database", 
     label: "",
     shape: (
-      <div className="w-[150px] h-[100px] border-2 rounded-md overflow-hidden flex flex-col scale-[0.3] origin-top-left transform">
-        <div className="h-[30px] border-b-2 bg-muted/20" />
+      <div className="w-8 h-8 border-2 rounded-md overflow-hidden flex flex-col">
+        <div className="h-2 border-b-2 bg-muted/20" />
         <div className="flex-1" />
       </div>
     )
