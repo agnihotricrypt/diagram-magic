@@ -56,6 +56,27 @@ const nodeTypes = {
   connector: ProcessNode,
 };
 
+// Define shape-specific styles and dimensions
+const shapeStyles = {
+  circle: { width: 100, height: 100 },
+  diamond: { width: 120, height: 120 },
+  database: { width: 150, height: 100 },
+  ellipse: { width: 200, height: 100 },
+  text: { width: 200, height: 50 },
+  square: { width: 100, height: 100 },
+  cylinder: { width: 150, height: 100 },
+  cloud: { width: 200, height: 120 },
+  parallelogram: { width: 200, height: 100 },
+  hexagon: { width: 200, height: 100 },
+  triangle: { width: 100, height: 100 },
+  note: { width: 150, height: 150 },
+  callout: { width: 200, height: 100 },
+  actor: { width: 100, height: 150 },
+  dashed: { width: 200, height: 2 },
+  connector: { width: 200, height: 2 },
+  process: { width: 200, height: 100 },
+};
+
 export const DiagramEditor = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
@@ -107,7 +128,10 @@ export const DiagramEditor = () => {
         y: event.clientY - reactFlowBounds.top,
       } : { x: 0, y: 0 };
 
-      // Create new node with the dropped type
+      // Get shape-specific dimensions
+      const shapeStyle = shapeStyles[type] || shapeStyles.process;
+
+      // Create new node with the dropped type and proper dimensions
       const newNode: Node<NodeData> = {
         id: `node_${nodes.length + 1}`,
         type,
@@ -118,14 +142,14 @@ export const DiagramEditor = () => {
             backgroundColor: 'transparent',
             color: '#000000',
             borderColor: '#000000',
-            width: 200,
-            height: 100,
+            width: shapeStyle.width,
+            height: shapeStyle.height,
             rotation: 0,
           }
         },
         style: {
-          width: type === 'circle' ? 100 : 200,
-          height: type === 'circle' ? 100 : 100,
+          width: shapeStyle.width,
+          height: shapeStyle.height,
           transform: `rotate(0deg)`,
         },
       };
