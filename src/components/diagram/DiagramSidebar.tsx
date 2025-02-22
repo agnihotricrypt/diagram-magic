@@ -1,4 +1,3 @@
-
 import {
   Sidebar,
   SidebarContent,
@@ -136,6 +135,18 @@ const GENERAL_NODES = [
   },
 ];
 
+// Color palette options
+const COLOR_PALETTE = [
+  { bg: "#FFFFFF", border: "#000000", label: "Black & White" },
+  { bg: "#F2FCE2", border: "#4CAF50", label: "Soft Green" },
+  { bg: "#FEF7CD", border: "#FFC107", label: "Soft Yellow" },
+  { bg: "#FEC6A1", border: "#FF9800", label: "Soft Orange" },
+  { bg: "#E5DEFF", border: "#9b87f5", label: "Soft Purple" },
+  { bg: "#FFDEE2", border: "#F44336", label: "Soft Pink" },
+  { bg: "#D3E4FD", border: "#2196F3", label: "Soft Blue" },
+  { bg: "#222222", border: "#FFFFFF", label: "Dark Mode" },
+];
+
 export const DiagramSidebar = () => {
   const onDragStart = (event: React.DragEvent, nodeType: string) => {
     event.dataTransfer.setData("application/reactflow", nodeType);
@@ -158,6 +169,36 @@ export const DiagramSidebar = () => {
                 >
                   {node.shape}
                 </div>
+              ))}
+            </div>
+          </SidebarGroupContent>
+        </SidebarGroup>
+        
+        <SidebarGroup>
+          <SidebarGroupLabel>Color Themes</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <div className="grid grid-cols-2 gap-2 p-4">
+              {COLOR_PALETTE.map((color, index) => (
+                <button
+                  key={index}
+                  className="p-2 rounded border hover:bg-accent/10 transition-colors flex flex-col items-center gap-2"
+                  onClick={() => {
+                    // We'll implement color change in DiagramEditor
+                    const event = new CustomEvent('changeNodeColor', {
+                      detail: { backgroundColor: color.bg, borderColor: color.border }
+                    });
+                    window.dispatchEvent(event);
+                  }}
+                >
+                  <div 
+                    className="w-full h-8 rounded border-2"
+                    style={{ 
+                      backgroundColor: color.bg,
+                      borderColor: color.border 
+                    }}
+                  />
+                  <span className="text-xs">{color.label}</span>
+                </button>
               ))}
             </div>
           </SidebarGroupContent>

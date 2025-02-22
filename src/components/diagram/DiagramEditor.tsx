@@ -1,5 +1,5 @@
 
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import {
   ReactFlow,
   Background,
@@ -42,6 +42,7 @@ const nodeTypes = {
 export const DiagramEditor = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  const [selectedNodes, setSelectedNodes] = React.useState<Node[]>([]);
 
   const onConnect = useCallback((params) => {
     setEdges((eds) => addEdge(params, eds));
@@ -98,7 +99,6 @@ export const DiagramEditor = () => {
   const onNodeDrag = useCallback(
     (event: React.MouseEvent, node: Node) => {
       if (event.shiftKey) {
-        // Rotate node when dragging with shift key
         const rotation = (node.style?.transform?.match(/-?\d+/) || ['0'])[0];
         const newRotation = (parseInt(rotation) + 5) % 360;
         
@@ -121,6 +121,45 @@ export const DiagramEditor = () => {
     [setNodes]
   );
 
+  // Handle node selection
+  const onSelectionChange = useCallback(
+    (params: { nodes: Node[] }) => {
+      setSelectedNodes(params.nodes);
+    },
+    []
+  );
+
+  // Listen for color change events
+  useEffect(() => {
+    const handleColorChange = (event: CustomEvent<{ backgroundColor: string; borderColor: string }>) => {
+      if (selectedNodes.length > 0) {
+        setNodes((nds) =>
+          nds.map((node) => {
+            if (selectedNodes.some((selectedNode) => selectedNode.id === node.id)) {
+              return {
+                ...node,
+                data: {
+                  ...node.data,
+                  style: {
+                    ...node.data.style,
+                    backgroundColor: event.detail.backgroundColor,
+                    borderColor: event.detail.borderColor,
+                  },
+                },
+              };
+            }
+            return node;
+          })
+        );
+      }
+    };
+
+    window.addEventListener('changeNodeColor', handleColorChange as EventListener);
+    return () => {
+      window.removeEventListener('changeNodeColor', handleColorChange as EventListener);
+    };
+  }, [selectedNodes, setNodes]);
+
   return (
     <div className="w-full h-full">
       <ReactFlow
@@ -132,9 +171,11 @@ export const DiagramEditor = () => {
         onDrop={onDrop}
         onDragOver={onDragOver}
         onNodeDrag={onNodeDrag}
+        onSelectionChange={onSelectionChange}
         nodeTypes={nodeTypes}
         fitView
         className="bg-muted/30"
+        selectNodesOnDrag={true}
       >
         <Background 
           variant={BackgroundVariant.Dots} 
