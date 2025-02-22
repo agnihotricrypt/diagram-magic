@@ -10,6 +10,8 @@ import {
   addEdge,
   BackgroundVariant,
   Node,
+  NodeProps,
+  OnSelectionChangeParams,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { initialNodes, initialEdges } from "./initial-elements";
@@ -18,8 +20,8 @@ import { DiamondNode } from "./nodes/DiamondNode";
 import { CircleNode } from "./nodes/CircleNode";
 import { DatabaseNode } from "./nodes/DatabaseNode";
 
-// Define proper types for node data
-interface NodeData {
+// Define node data type that extends Record<string, unknown>
+interface NodeData extends Record<string, unknown> {
   label: string;
   style?: {
     backgroundColor?: string;
@@ -31,9 +33,7 @@ interface NodeData {
   };
 }
 
-interface CustomNode extends Node {
-  data: NodeData;
-}
+type CustomNode = Node<NodeData>;
 
 // Register all available node types
 const nodeTypes = {
@@ -59,7 +59,7 @@ const nodeTypes = {
 export const DiagramEditor = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
-  const [selectedNodes, setSelectedNodes] = useState<CustomNode[]>([]);
+  const [selectedNodes, setSelectedNodes] = useState<Node<NodeData>[]>([]);
 
   const onConnect = useCallback((params) => {
     setEdges((eds) => addEdge(params, eds));
@@ -85,7 +85,7 @@ export const DiagramEditor = () => {
       } : { x: 0, y: 0 };
 
       // Create new node with the dropped type
-      const newNode: CustomNode = {
+      const newNode: Node<NodeData> = {
         id: `node_${nodes.length + 1}`,
         type,
         position,
@@ -140,8 +140,8 @@ export const DiagramEditor = () => {
 
   // Handle node selection
   const onSelectionChange = useCallback(
-    (params: { nodes: CustomNode[] }) => {
-      setSelectedNodes(params.nodes || []);
+    (params: OnSelectionChangeParams) => {
+      setSelectedNodes(params.nodes as Node<NodeData>[]);
     },
     []
   );
@@ -153,13 +153,13 @@ export const DiagramEditor = () => {
         setNodes((nds) =>
           nds.map((node) => {
             if (selectedNodes.some((selectedNode) => selectedNode.id === node.id)) {
-              const typedNode = node as CustomNode;
+              const typedNode = node as Node<NodeData>;
               return {
                 ...typedNode,
                 data: {
                   ...typedNode.data,
                   style: {
-                    ...typedNode.data.style,
+                    ...(typedNode.data.style || {}),
                     backgroundColor: event.detail.backgroundColor,
                     borderColor: event.detail.borderColor,
                   },
