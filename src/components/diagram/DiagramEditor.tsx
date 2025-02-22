@@ -9,6 +9,7 @@ import {
   useEdgesState,
   addEdge,
   BackgroundVariant,
+  Node,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { initialNodes, initialEdges } from "./initial-elements";
@@ -23,6 +24,19 @@ const nodeTypes = {
   diamond: DiamondNode,
   circle: CircleNode,
   database: DatabaseNode,
+  ellipse: ProcessNode, // Using ProcessNode as base for other shapes
+  text: ProcessNode,
+  square: ProcessNode,
+  cylinder: DatabaseNode,
+  cloud: ProcessNode,
+  parallelogram: ProcessNode,
+  hexagon: ProcessNode,
+  triangle: ProcessNode,
+  note: ProcessNode,
+  callout: ProcessNode,
+  actor: ProcessNode,
+  dashed: ProcessNode,
+  connector: ProcessNode,
 };
 
 export const DiagramEditor = () => {
@@ -45,22 +59,66 @@ export const DiagramEditor = () => {
       const type = event.dataTransfer.getData("application/reactflow");
       if (!type) return;
 
-      const position = {
-        x: event.clientX - 100,
-        y: event.clientY - 50,
-      };
+      // Get the position of the drop
+      const reactFlowBounds = document.querySelector('.react-flow')?.getBoundingClientRect();
+      const position = reactFlowBounds ? {
+        x: event.clientX - reactFlowBounds.left,
+        y: event.clientY - reactFlowBounds.top,
+      } : { x: 0, y: 0 };
 
       // Create new node with the dropped type
       const newNode = {
         id: `node_${nodes.length + 1}`,
         type,
         position,
-        data: { label: `${type.charAt(0).toUpperCase() + type.slice(1)} ${nodes.length + 1}` },
+        data: { 
+          label: `${type.charAt(0).toUpperCase() + type.slice(1)} ${nodes.length + 1}`,
+          style: {
+            backgroundColor: 'transparent',
+            color: '#000000',
+            borderColor: '#000000',
+            width: 200,
+            height: 100,
+            rotation: 0,
+          }
+        },
+        style: {
+          width: type === 'circle' ? 100 : 200,
+          height: type === 'circle' ? 100 : 100,
+          transform: `rotate(0deg)`,
+        },
       };
 
       setNodes((nds) => nds.concat(newNode));
     },
     [nodes, setNodes]
+  );
+
+  // Handle node rotation and resizing
+  const onNodeDrag = useCallback(
+    (event: React.MouseEvent, node: Node) => {
+      if (event.shiftKey) {
+        // Rotate node when dragging with shift key
+        const rotation = (node.style?.transform?.match(/-?\d+/) || ['0'])[0];
+        const newRotation = (parseInt(rotation) + 5) % 360;
+        
+        setNodes((nds) =>
+          nds.map((n) => {
+            if (n.id === node.id) {
+              return {
+                ...n,
+                style: {
+                  ...n.style,
+                  transform: `rotate(${newRotation}deg)`,
+                },
+              };
+            }
+            return n;
+          })
+        );
+      }
+    },
+    [setNodes]
   );
 
   return (
@@ -73,6 +131,7 @@ export const DiagramEditor = () => {
         onConnect={onConnect}
         onDrop={onDrop}
         onDragOver={onDragOver}
+        onNodeDrag={onNodeDrag}
         nodeTypes={nodeTypes}
         fitView
         className="bg-muted/30"
