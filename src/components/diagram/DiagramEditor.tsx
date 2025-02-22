@@ -1,5 +1,5 @@
 
-import { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   ReactFlow,
   Background,
@@ -42,7 +42,7 @@ const nodeTypes = {
 export const DiagramEditor = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
-  const [selectedNodes, setSelectedNodes] = React.useState<Node[]>([]);
+  const [selectedNodes, setSelectedNodes] = useState<Node[]>([]);
 
   const onConnect = useCallback((params) => {
     setEdges((eds) => addEdge(params, eds));
@@ -124,7 +124,7 @@ export const DiagramEditor = () => {
   // Handle node selection
   const onSelectionChange = useCallback(
     (params: { nodes: Node[] }) => {
-      setSelectedNodes(params.nodes);
+      setSelectedNodes(params.nodes || []);
     },
     []
   );
@@ -141,7 +141,7 @@ export const DiagramEditor = () => {
                 data: {
                   ...node.data,
                   style: {
-                    ...node.data.style,
+                    ...(node.data?.style || {}),
                     backgroundColor: event.detail.backgroundColor,
                     borderColor: event.detail.borderColor,
                   },
