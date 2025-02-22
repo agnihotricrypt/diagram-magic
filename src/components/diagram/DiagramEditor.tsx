@@ -41,7 +41,7 @@ const nodeTypes = {
   diamond: DiamondNode,
   circle: CircleNode,
   database: DatabaseNode,
-  ellipse: ProcessNode, // Using ProcessNode as base for other shapes
+  ellipse: ProcessNode,
   text: ProcessNode,
   square: ProcessNode,
   cylinder: DatabaseNode,
@@ -64,6 +64,29 @@ export const DiagramEditor = () => {
   const onConnect = useCallback((params) => {
     setEdges((eds) => addEdge(params, eds));
   }, []);
+
+  // Handle keyboard events for deletion
+  const onKeyDown = useCallback(
+    (event: KeyboardEvent) => {
+      if ((event.key === 'Delete' || event.key === 'Backspace') && selectedNodes.length > 0) {
+        setNodes((nds) => nds.filter((node) => !selectedNodes.some((selectedNode) => selectedNode.id === node.id)));
+        setEdges((eds) => eds.filter((edge) => 
+          !selectedNodes.some((node) => 
+            node.id === edge.source || node.id === edge.target
+          )
+        ));
+      }
+    },
+    [selectedNodes, setNodes, setEdges]
+  );
+
+  // Add and remove keyboard event listener
+  useEffect(() => {
+    window.addEventListener('keydown', onKeyDown);
+    return () => {
+      window.removeEventListener('keydown', onKeyDown);
+    };
+  }, [onKeyDown]);
 
   const onDragOver = useCallback((event: React.DragEvent) => {
     event.preventDefault();
