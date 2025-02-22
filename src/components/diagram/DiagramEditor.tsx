@@ -18,6 +18,23 @@ import { DiamondNode } from "./nodes/DiamondNode";
 import { CircleNode } from "./nodes/CircleNode";
 import { DatabaseNode } from "./nodes/DatabaseNode";
 
+// Define proper types for node data
+interface NodeData {
+  label: string;
+  style?: {
+    backgroundColor?: string;
+    color?: string;
+    borderColor?: string;
+    width?: number;
+    height?: number;
+    rotation?: number;
+  };
+}
+
+interface CustomNode extends Node {
+  data: NodeData;
+}
+
 // Register all available node types
 const nodeTypes = {
   process: ProcessNode,
@@ -42,7 +59,7 @@ const nodeTypes = {
 export const DiagramEditor = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
-  const [selectedNodes, setSelectedNodes] = useState<Node[]>([]);
+  const [selectedNodes, setSelectedNodes] = useState<CustomNode[]>([]);
 
   const onConnect = useCallback((params) => {
     setEdges((eds) => addEdge(params, eds));
@@ -68,7 +85,7 @@ export const DiagramEditor = () => {
       } : { x: 0, y: 0 };
 
       // Create new node with the dropped type
-      const newNode = {
+      const newNode: CustomNode = {
         id: `node_${nodes.length + 1}`,
         type,
         position,
@@ -123,7 +140,7 @@ export const DiagramEditor = () => {
 
   // Handle node selection
   const onSelectionChange = useCallback(
-    (params: { nodes: Node[] }) => {
+    (params: { nodes: CustomNode[] }) => {
       setSelectedNodes(params.nodes || []);
     },
     []
@@ -136,12 +153,13 @@ export const DiagramEditor = () => {
         setNodes((nds) =>
           nds.map((node) => {
             if (selectedNodes.some((selectedNode) => selectedNode.id === node.id)) {
+              const typedNode = node as CustomNode;
               return {
-                ...node,
+                ...typedNode,
                 data: {
-                  ...node.data,
+                  ...typedNode.data,
                   style: {
-                    ...(node.data?.style || {}),
+                    ...typedNode.data.style,
                     backgroundColor: event.detail.backgroundColor,
                     borderColor: event.detail.borderColor,
                   },
