@@ -1,24 +1,39 @@
 
 import { Handle, Position } from "@xyflow/react";
 
+type NodeData = {
+  label: string;
+  style?: {
+    backgroundColor?: string;
+    color?: string;
+    borderColor?: string;
+  };
+};
+
 // Diamond shaped node for decision points with perfect rhombus shape
-export const DiamondNode = ({ data }: { data: { label: string } }) => {
+export const DiamondNode = ({ data }: { data: NodeData }) => {
+  const style = {
+    backgroundColor: data.style?.backgroundColor || 'transparent',
+    color: data.style?.color || '#000000',
+    borderColor: data.style?.borderColor || '#000000',
+  };
+
   return (
     // Using CSS to create a perfect rhombus shape with 60-degree angles
-    <div className="relative w-[120px] h-[120px] rotate-45 bg-background/80 border border-opacity-40 shadow-lg">
+    <div 
+      className="relative w-[120px] h-[120px] rotate-45 bg-background/80 border-2 border-opacity-40 shadow-lg"
+      style={style}
+    >
       {/* Rotated container for content to stay straight */}
       <div className="absolute inset-0 -rotate-45 flex items-center justify-center p-2">
-        {/* Editable label with double-click */}
         <div
           className="text-sm font-medium text-center"
           contentEditable
           suppressContentEditableWarning
           onBlur={(e) => {
-            // Update the node data when the label is edited
             const nodeElement = e.target.closest('.react-flow__node');
             if (nodeElement) {
               const nodeId = nodeElement.getAttribute('data-id');
-              // The change will be handled by React Flow's node data update
             }
           }}
         >
