@@ -136,6 +136,8 @@ export const DiagramEditor = () => {
         id: `node_${nodes.length + 1}`,
         type,
         position,
+        draggable: true, // Enable dragging
+        selectable: true, // Enable selection
         data: { 
           label: `${type.charAt(0).toUpperCase() + type.slice(1)} ${nodes.length + 1}`,
           style: {
@@ -240,7 +242,8 @@ export const DiagramEditor = () => {
         nodeTypes={nodeTypes}
         fitView
         className="bg-muted/30"
-        selectNodesOnDrag={true}
+        selectNodesOnDrag={false}
+        draggable={true}
       >
         <Background 
           variant={BackgroundVariant.Dots} 
