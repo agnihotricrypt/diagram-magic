@@ -76,7 +76,11 @@ export const ProcessNode = ({ data, selected, type }: { data: NodeData; selected
   return (
     <div 
       className={`bg-background/80 border-2 border-opacity-40 shadow-lg ${getShapeClassName()}`}
-      style={style}
+      style={{
+        ...style,
+        resize: selected ? 'both' : 'none',
+        overflow: 'hidden',
+      }}
     >
       <Handle type="target" position={Position.Top} className="!bg-primary/80" />
       <div className="p-3 w-full h-full flex items-center justify-center">
@@ -84,12 +88,12 @@ export const ProcessNode = ({ data, selected, type }: { data: NodeData; selected
       </div>
       <Handle type="source" position={Position.Bottom} className="!bg-primary/80" />
       
-      {/* Resize handles when selected */}
+      {/* Resize handles */}
       {selected && (
         <>
-          <div className="absolute -right-1 top-1/2 w-2 h-2 bg-primary cursor-ew-resize -translate-y-1/2" />
-          <div className="absolute left-1/2 -bottom-1 w-2 h-2 bg-primary cursor-ns-resize -translate-x-1/2" />
-          <div className="absolute -right-1 -bottom-1 w-2 h-2 bg-primary cursor-nwse-resize" />
+          <div className="absolute -right-1 top-1/2 w-3 h-3 bg-primary cursor-ew-resize -translate-y-1/2" />
+          <div className="absolute left-1/2 -bottom-1 w-3 h-3 bg-primary cursor-ns-resize -translate-x-1/2" />
+          <div className="absolute -right-1 -bottom-1 w-3 h-3 bg-primary cursor-nwse-resize" />
         </>
       )}
     </div>
